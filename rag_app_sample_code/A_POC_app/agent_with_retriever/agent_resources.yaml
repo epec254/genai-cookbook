@@ -1,7 +1,0 @@
-api_version: '1'
-databricks:
-  serving_endpoint:
-  - name: databricks-meta-llama-3-70b-instruct
-  - name: ep-embeddings-small
-  vector_search_index:
-  - name: ericpeter_catalog.agents.my_agent_app_chunked_docs_index
