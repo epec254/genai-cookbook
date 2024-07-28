@@ -1,0 +1,55 @@
+databricks_resources:
+  llm_endpoint_name: ep-gpt4o
+input_example:
+  messages:
+  - content: What is RAG?
+    role: user
+llm_config:
+  llm_parameters:
+    max_tokens: 500
+    temperature: 0.001
+  llm_system_prompt_template: You are a helpful assistant that answers questions by
+    calling tools.  Please provide responses based on the information from these tools.  If
+    you cannot answer a query or don't have a relevant tool, respond with 'Sorry,
+    I'm not trained to answer that question'.
+retriever_tool:
+  prompt_template: 'Use the following pieces of retrieved context to answer the question.
+
+    Some pieces of context may be irrelevant, in which case you should not use them
+    to form the answer.
+
+
+    Context: {context}'
+  retriever_config:
+    vector_search_index: ericpeter_catalog.agents.my_agent_app_chunked_docs_index
+    vector_search_parameters:
+      columns:
+      - chunk_id
+      - content_chunked
+      - doc_uri
+      num_results: 5
+      query_type: ann
+    vector_search_schema:
+      chunk_text: content_chunked
+      document_uri: doc_uri
+      primary_key: chunk_id
+    vector_search_threshold: 0.1
+tools:
+- function:
+    description: Search for documents that are relevant to a user's query.
+    name: retrieve_documents
+    parameters:
+      properties:
+        doc_name_filter:
+          description: A filter for the specific document name.
+          enum:
+          - /Volumes/ericpeter_catalog/agents/source_docs/2212.14024.pdf
+          - test_doc_2
+          type: string
+        query:
+          description: The query to find documents about.
+          type: string
+      required:
+      - query
+      type: object
+  type: function
