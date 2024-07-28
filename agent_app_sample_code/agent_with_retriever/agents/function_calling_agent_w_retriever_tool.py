@@ -230,7 +230,10 @@ class AgentWithRetriever(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
         # TODO: This is an ugly hack to support the CUJ of iterating on config in a notebook
         if self.__agent_config is None:
-            self.config = mlflow.models.ModelConfig(development_config="agents/generated_configs/agent.yaml")
+            try:
+                self.config = mlflow.models.ModelConfig(development_config="agents/generated_configs/agent.yaml")
+            except Exception as e:
+                self.config = mlflow.models.ModelConfig()
         else:
             self.config = mlflow.models.ModelConfig(development_config=self.__agent_config)
         
